@@ -16,6 +16,7 @@ public class ExpenseModel
     
     // Benutzer-Zuordnung
     public Guid UserId { get; set; }
+    public UserModel User { get; set; }
     
     // Erweiterte Kategorisierung
     // Foreign Key

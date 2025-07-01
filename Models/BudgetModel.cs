@@ -9,4 +9,5 @@ public class BudgetModel
     public DateTime EndDate { get; set; }
     public Guid CategoryId { get; set; }
     public Guid UserId { get; set; }
+    public UserModel User { get; set; }
 }
