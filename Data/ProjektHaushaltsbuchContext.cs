@@ -19,8 +19,7 @@ namespace ProjektHaushaltsbuch.Data
             // Ignore DisplayFormatAttribute if it's being picked up
             // modelBuilder.Ignore<System.ComponentModel.DataAnnotations.DisplayFormatAttribute>();
             
-            modelBuilder.Entity<UserModel>()
-                .HasKey(u => u.Id);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjektHaushaltsbuchContext).Assembly);
 
             modelBuilder.Entity<ExpenseModel>()
                 .HasOne(e => e.User)
@@ -39,30 +38,6 @@ namespace ProjektHaushaltsbuch.Data
                 .HasForeignKey(b => b.UserId);
             
             // Property configuration
-            modelBuilder.Entity<UserModel>(entity =>
-            {
-                // Name: Required, MinLength(3), MaxLength(25)
-                entity.Property(u => u.Name)
-                    .IsRequired()
-                    .HasMaxLength(25);
-        
-                entity.HasCheckConstraint("CK_UserModel_Name_MinLength", 
-                    "LEN([Name]) >= 3");
-        
-                // Surname: MinLength(3), MaxLength(25), nullable
-                entity.Property(u => u.Surname)
-                    .HasMaxLength(25);
-        
-                entity.HasCheckConstraint("CK_UserModel_Surname_MinLength", 
-                    "([Surname] IS NULL OR LEN([Surname]) >= 3)");
-        
-                // Email: Required
-                entity.Property(u => u.Email)
-                    .IsRequired();
-            });
-
-
-
             modelBuilder.Entity<ExpenseModel>()
                 .Property(e => e.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
