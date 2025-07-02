@@ -2,24 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjektHaushaltsbuch.Data;
 using ProjektHaushaltsbuch.Models;
+using ProjektHaushaltsbuch.Web.ViewModels;
 
 namespace ProjektHaushaltsbuch.Controllers
 {
-    public class ExpenseController(ProjektHaushaltsbuchContext context) : Controller
+    public class UserController(ProjektHaushaltsbuchContext context, IMapper mapper) : Controller
     {
-        // GET: Expense
+        // GET: User
         public async Task<IActionResult> Index()
         {
-            var projektHaushaltsbuchContext = context.Expenses.Include(e => e.Category);
-            return View(await projektHaushaltsbuchContext.ToListAsync());
+            var users = await context.Users.ToListAsync();
+            var userViewModels = mapper.Map<List<UserViewModel>>(users);
+            return View(userViewModels);
         }
 
-        // GET: Expense/Details/5
+        // GET: User/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -27,43 +30,40 @@ namespace ProjektHaushaltsbuch.Controllers
                 return NotFound();
             }
 
-            var expenseModel = await context.Expenses
-                .Include(e => e.Category)
+            var userModel = await context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (expenseModel == null)
+            if (userModel == null)
             {
                 return NotFound();
             }
 
-            return View(expenseModel);
+            return View(userModel);
         }
 
-        // GET: Expense/Create
+        // GET: User/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(context.Set<CategoryModel>(), "Id", "Id");
             return View();
         }
 
-        // POST: Expense/Create
+        // POST: User/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Sum,Currency,Date,Description,Notes,UserId,CategoryId,Subcategory,Tags,PaymentMethod,PaymentAccount,IsBusinessExpense,ReceiptNumber,Vendor,Location,IsRecurring,RecurrencePattern,ParentRecurringExpenseId,CreatedAt,UpdatedAt,IsDeleted,AttachmentUrls,BudgetId,IsPlanned")] ExpenseModel expenseModel)
+        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Email")] UserModel userModel)
         {
             if (ModelState.IsValid)
             {
-                expenseModel.Id = Guid.NewGuid();
-                context.Add(expenseModel);
+                userModel.Id = Guid.NewGuid();
+                context.Add(userModel);
                 await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(context.Set<CategoryModel>(), "Id", "Id", expenseModel.CategoryId);
-            return View(expenseModel);
+            return View(userModel);
         }
 
-        // GET: Expense/Edit/5
+        // GET: User/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -71,23 +71,22 @@ namespace ProjektHaushaltsbuch.Controllers
                 return NotFound();
             }
 
-            var expenseModel = await context.Expenses.FindAsync(id);
-            if (expenseModel == null)
+            var userModel = await context.Users.FindAsync(id);
+            if (userModel == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(context.Set<CategoryModel>(), "Id", "Id", expenseModel.CategoryId);
-            return View(expenseModel);
+            return View(userModel);
         }
 
-        // POST: Expense/Edit/5
+        // POST: User/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Sum,Currency,Date,Description,Notes,UserId,CategoryId,Subcategory,Tags,PaymentMethod,PaymentAccount,IsBusinessExpense,ReceiptNumber,Vendor,Location,IsRecurring,RecurrencePattern,ParentRecurringExpenseId,CreatedAt,UpdatedAt,IsDeleted,AttachmentUrls,BudgetId,IsPlanned")] ExpenseModel expenseModel)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Surname,Email")] UserModel userModel)
         {
-            if (id != expenseModel.Id)
+            if (id != userModel.Id)
             {
                 return NotFound();
             }
@@ -96,12 +95,12 @@ namespace ProjektHaushaltsbuch.Controllers
             {
                 try
                 {
-                    context.Update(expenseModel);
+                    context.Update(userModel);
                     await context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ExpenseModelExists(expenseModel.Id))
+                    if (!UserModelExists(userModel.Id))
                     {
                         return NotFound();
                     }
@@ -112,11 +111,10 @@ namespace ProjektHaushaltsbuch.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(context.Set<CategoryModel>(), "Id", "Id", expenseModel.CategoryId);
-            return View(expenseModel);
+            return View(userModel);
         }
 
-        // GET: Expense/Delete/5
+        // GET: User/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -124,35 +122,34 @@ namespace ProjektHaushaltsbuch.Controllers
                 return NotFound();
             }
 
-            var expenseModel = await context.Expenses
-                .Include(e => e.Category)
+            var userModel = await context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (expenseModel == null)
+            if (userModel == null)
             {
                 return NotFound();
             }
 
-            return View(expenseModel);
+            return View(userModel);
         }
 
-        // POST: Expense/Delete/5
+        // POST: User/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var expenseModel = await context.Expenses.FindAsync(id);
-            if (expenseModel != null)
+            var userModel = await context.Users.FindAsync(id);
+            if (userModel != null)
             {
-                context.Expenses.Remove(expenseModel);
+                context.Users.Remove(userModel);
             }
 
             await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ExpenseModelExists(Guid id)
+        private bool UserModelExists(Guid id)
         {
-            return context.Expenses.Any(e => e.Id == id);
+            return context.Users.Any(e => e.Id == id);
         }
     }
 }
