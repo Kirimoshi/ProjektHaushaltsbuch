@@ -4,15 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using ProjektHaushaltsbuch.Data;
 using ProjektHaushaltsbuch.Models;
 
 namespace ProjektHaushaltsbuch.Controllers
 {
+    [EnableRateLimiting("GlobalEndpointPolicy")]
     public class ExpenseController(ProjektHaushaltsbuchContext context) : Controller
     {
         // GET: Expense
+        [EnableRateLimiting("GetPolicy")]
         public async Task<IActionResult> Index()
         {
             var projektHaushaltsbuchContext = context.Expenses.Include(e => e.Category);
@@ -20,6 +23,7 @@ namespace ProjektHaushaltsbuch.Controllers
         }
 
         // GET: Expense/Details/5
+        [EnableRateLimiting("GetPolicy")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -48,6 +52,7 @@ namespace ProjektHaushaltsbuch.Controllers
         // POST: Expense/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Sum,Currency,Date,Description,Notes,UserId,CategoryId,Subcategory,Tags,PaymentMethod,PaymentAccount,IsBusinessExpense,ReceiptNumber,Vendor,Location,IsRecurring,RecurrencePattern,ParentRecurringExpenseId,CreatedAt,UpdatedAt,IsDeleted,AttachmentUrls,BudgetId,IsPlanned")] ExpenseModel expenseModel)
