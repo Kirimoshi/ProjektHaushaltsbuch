@@ -32,6 +32,7 @@ builder.Services
 
 builder.Services.AddSerilog();
 builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(ExpenseDisplayProfile));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

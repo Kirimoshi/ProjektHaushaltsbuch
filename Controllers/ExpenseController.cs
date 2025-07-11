@@ -2,24 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using ProjektHaushaltsbuch.Data;
 using ProjektHaushaltsbuch.Models;
+using ProjektHaushaltsbuch.Web.ViewModels;
 
 namespace ProjektHaushaltsbuch.Controllers
 {
     [EnableRateLimiting("GlobalEndpointPolicy")]
-    public class ExpenseController(ProjektHaushaltsbuchContext context) : Controller
+    public class ExpenseController(ProjektHaushaltsbuchContext context, IMapper mapper) : Controller
     {
         // GET: Expense
         [EnableRateLimiting("GetPolicy")]
         public async Task<IActionResult> Index()
         {
-            var projektHaushaltsbuchContext = context.Expenses.Include(e => e.Category);
-            return View(await projektHaushaltsbuchContext.ToListAsync());
+            var expenses = await context.Expenses
+                .Include(e => e.Category)
+                .ToListAsync();
+            var viewModels = mapper.Map<List<ExpenseDisplayViewModel>>(expenses);
+            return View(viewModels);
         }
 
         // GET: Expense/Details/5

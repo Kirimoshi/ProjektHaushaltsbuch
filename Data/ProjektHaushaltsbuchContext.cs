@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjektHaushaltsbuch.Models;
+using ProjektHaushaltsbuch.Web.ViewModels;
 
 namespace ProjektHaushaltsbuch.Data
 {
@@ -21,5 +22,6 @@ namespace ProjektHaushaltsbuch.Data
             
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjektHaushaltsbuchContext).Assembly);
         }
+        public DbSet<ProjektHaushaltsbuch.Web.ViewModels.ExpenseDisplayViewModel> ExpenseDisplayViewModel { get; set; } = default!;
     }
 }
