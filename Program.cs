@@ -8,6 +8,7 @@ using ProjektHaushaltsbuch.Web.Mappings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using ProjektHaushaltsbuch.Data.Identity;
+using Scalar.AspNetCore;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -75,6 +76,8 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
     };
 });
 
+builder.Services.AddOpenApi();
+
 var app = builder.Build();
 
 // Seeding DB
@@ -95,9 +98,14 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
     app.UseDeveloperExceptionPage();
     Console.WriteLine("Running in Development mode");
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.Title = "Deine Haushaltsbuch API";
+        options.Theme = ScalarTheme.Purple; // Verschiedene Themes verfügbar
+    });
 }
 else
 {
