@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -5,7 +6,9 @@ using ProjektHaushaltsbuch.Data;
 using ProjektHaushaltsbuch.SeedData;
 using ProjektHaushaltsbuch.Web.Mappings;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using ProjektHaushaltsbuch.Data.Identity;
+using Scalar.AspNetCore;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -29,6 +32,7 @@ builder.Services
 
 builder.Services.AddSerilog();
 builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(ExpenseDisplayProfile));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -39,12 +43,41 @@ builder.Services.AddAuthentication()
     {
         IConfigurationSection googleAuthNSection =
             config.GetSection("Authentication:Google");
-        options.ClientId = googleAuthNSection["ClientId"];
-        options.ClientSecret = googleAuthNSection["ClientSecret"];
-
-        // options.ClientId = config["Authentication__Google__ClientId"];
-        // options.ClientSecret = config["Authentication__Google__ClientSecret"];
+        options.ClientId = googleAuthNSection["ClientId"] ?? throw new InvalidOperationException("Authentication:Google:ClientId not found.");
+        options.ClientSecret = googleAuthNSection["ClientSecret"] ?? throw new InvalidOperationException("Authentication:Google:ClientSecret not found.");
     });
+
+builder.Services.AddRateLimiter(rateLimiterOptions =>
+{
+    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    
+    rateLimiterOptions.AddSlidingWindowLimiter("GlobalEndpointPolicy", options =>
+    {
+        options.PermitLimit = 15;
+        options.Window = TimeSpan.FromMinutes(1);
+        options.SegmentsPerWindow = 6;
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 10;
+    });
+    rateLimiterOptions.AddSlidingWindowLimiter("GetPolicy", options =>
+    {
+        options.PermitLimit = 60;
+        options.Window = TimeSpan.FromMinutes(1);
+        options.SegmentsPerWindow = 6;
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 10;
+    });
+    rateLimiterOptions.OnRejected = (context, cancellationToken) =>
+    {
+        Log.Warning("Rate limit exceeded for {EndPoint} from {IP}", 
+            context.HttpContext.Request.Path, 
+            context.HttpContext.Connection.RemoteIpAddress);
+    
+        return new ValueTask();
+    };
+});
+
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -66,9 +99,14 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
     app.UseDeveloperExceptionPage();
     Console.WriteLine("Running in Development mode");
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.Title = "Deine Haushaltsbuch API";
+        options.Theme = ScalarTheme.Purple; // Verschiedene Themes verfügbar
+    });
 }
 else
 {
@@ -82,6 +120,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapStaticAssets();
 

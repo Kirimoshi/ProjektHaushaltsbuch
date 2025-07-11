@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjektHaushaltsbuch.Models;
+using ProjektHaushaltsbuch.Web.ViewModels;
 
 namespace ProjektHaushaltsbuch.Data
 {
@@ -20,53 +21,7 @@ namespace ProjektHaushaltsbuch.Data
             // modelBuilder.Ignore<System.ComponentModel.DataAnnotations.DisplayFormatAttribute>();
             
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjektHaushaltsbuchContext).Assembly);
-
-            modelBuilder.Entity<ExpenseModel>()
-                .HasOne(e => e.User)
-                .WithMany(u => u.Expenses)
-                .HasForeignKey(e => e.UserId);
-
-            modelBuilder.Entity<ExpenseModel>()
-                .HasOne(e => e.Category)
-                .WithMany(c => c.Expenses)
-                .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<BudgetModel>()
-                .HasOne(b => b.User)
-                .WithMany(u => u.Budgets)
-                .HasForeignKey(b => b.UserId);
-            
-            // Property configuration
-            modelBuilder.Entity<ExpenseModel>()
-                .Property(e => e.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-            modelBuilder.Entity<ExpenseModel>()
-                .Property(e => e.Sum)
-                .HasPrecision(19, 4);
-            
-            modelBuilder.Entity<BudgetModel>()
-                .Property(b => b.Amount)
-                .HasPrecision(19, 4);
-            
-            // Indexes for performance
-            modelBuilder.Entity<ExpenseModel>()
-                .HasIndex(e => e.CategoryId);
-            modelBuilder.Entity<ExpenseModel>()
-                .HasIndex(e => e.UserId);
-            modelBuilder.Entity<ExpenseModel>()
-                .HasIndex(e => e.Date);
-            modelBuilder.Entity<ExpenseModel>()
-                .HasIndex(e => e.BudgetId);
-            
-            // Composite indexes
-            modelBuilder.Entity<ExpenseModel>()
-                .HasIndex(e => new { e.UserId, e.Date });
-            modelBuilder.Entity<ExpenseModel>()
-                .HasIndex(e => new { e.UserId, e.Date, e.CategoryId });
-
-
-
         }
+        public DbSet<ProjektHaushaltsbuch.Web.ViewModels.ExpenseDisplayViewModel> ExpenseDisplayViewModel { get; set; } = default!;
     }
 }

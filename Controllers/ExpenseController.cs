@@ -2,24 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using ProjektHaushaltsbuch.Data;
 using ProjektHaushaltsbuch.Models;
+using ProjektHaushaltsbuch.Web.ViewModels;
 
 namespace ProjektHaushaltsbuch.Controllers
 {
-    public class ExpenseController(ProjektHaushaltsbuchContext context) : Controller
+    [EnableRateLimiting("GlobalEndpointPolicy")]
+    public class ExpenseController(ProjektHaushaltsbuchContext context, IMapper mapper) : Controller
     {
         // GET: Expense
+        [EnableRateLimiting("GetPolicy")]
         public async Task<IActionResult> Index()
         {
-            var projektHaushaltsbuchContext = context.Expenses.Include(e => e.Category);
-            return View(await projektHaushaltsbuchContext.ToListAsync());
+            var expenses = await context.Expenses
+                .Include(e => e.Category)
+                .ToListAsync();
+            var viewModels = mapper.Map<List<ExpenseDisplayViewModel>>(expenses);
+            return View(viewModels);
         }
 
         // GET: Expense/Details/5
+        [EnableRateLimiting("GetPolicy")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -48,6 +57,7 @@ namespace ProjektHaushaltsbuch.Controllers
         // POST: Expense/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Sum,Currency,Date,Description,Notes,UserId,CategoryId,Subcategory,Tags,PaymentMethod,PaymentAccount,IsBusinessExpense,ReceiptNumber,Vendor,Location,IsRecurring,RecurrencePattern,ParentRecurringExpenseId,CreatedAt,UpdatedAt,IsDeleted,AttachmentUrls,BudgetId,IsPlanned")] ExpenseModel expenseModel)

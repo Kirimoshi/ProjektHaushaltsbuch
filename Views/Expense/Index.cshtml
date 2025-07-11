@@ -1,174 +1,116 @@
-@model IEnumerable<ProjektHaushaltsbuch.Models.ExpenseModel>
+@model IEnumerable<ProjektHaushaltsbuch.Web.ViewModels.ExpenseDisplayViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Ausgaben";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Ausgaben</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Neue Ausgabe erstellen</a>
 </p>
-<table class="table">
+
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Sum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Currency)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Subcategory)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tags)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentMethod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentAccount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsBusinessExpense)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReceiptNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Vendor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsRecurring)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecurrencePattern)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ParentRecurringExpenseId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AttachmentUrls)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BudgetId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPlanned)
-            </th>
-            <th></th>
+            <th>Betrag</th>
+            <th>Datum</th>
+            <th>Beschreibung</th>
+            <th>Kategorie</th>
+            <th>Zahlungsmethode</th>
+            <th>Status</th>
+            <th>Anhänge</th>
+            <th>Aktionen</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sum)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Currency)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subcategory)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tags)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentMethod)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentAccount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsBusinessExpense)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReceiptNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vendor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsRecurring)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecurrencePattern)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParentRecurringExpenseId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AttachmentUrls)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BudgetId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPlanned)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <strong>@item.FormattedSum</strong>
+                </td>
+                <td>
+                    @item.FormattedDate
+                    <br />
+                    <small class="text-muted">@item.TimeAgo</small>
+                </td>
+                <td>
+                    <strong>@item.Description</strong>
+                    @if (!string.IsNullOrEmpty(item.Notes))
+                    {
+                        <br />
+                        <small class="text-muted">@item.Notes</small>
+                    }
+                </td>
+                <td>
+                    <span class="badge @item.ColorClass">
+                        <i class="@item.IconClass"></i>
+                        @item.CategoryName
+                    </span>
+                    @if (!string.IsNullOrEmpty(item.Subcategory))
+                    {
+                        <br />
+                        <small>@item.Subcategory</small>
+                    }
+                </td>
+                <td>
+                    @item.PaymentMethodDisplay
+                    @if (!string.IsNullOrEmpty(item.PaymentAccount))
+                    {
+                        <br />
+                        <small class="text-muted">@item.PaymentAccount</small>
+                    }
+                </td>
+                <td>
+                    <span class="badge @(item.IsPlanned ? "bg-warning" : "bg-success")">
+                        @item.StatusDisplay
+                    </span>
+                    @if (item.IsBusinessExpense)
+                    {
+                        <br />
+                        <span class="badge bg-info">Geschäftsausgabe</span>
+                    }
+                    @if (item.IsRecurring)
+                    {
+                        <br />
+                        <span class="badge bg-secondary">@item.RecurrenceDisplay</span>
+                    }
+                </td>
+                <td>
+                    @if (item.HasAttachments)
+                    {
+                        <i class="fas fa-paperclip"></i>
+                        <span class="badge bg-light text-dark">@item.AttachmentCount</span>
+                    }
+                </td>
+                <td>
+                    @if (item.CanEdit)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    @if (item.CanDelete)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <h4>Keine Ausgaben vorhanden</h4>
+        <p>Es wurden noch keine Ausgaben erfasst. <a asp-action="Create">Erstellen Sie Ihre erste Ausgabe</a>.</p>
+    </div>
+}

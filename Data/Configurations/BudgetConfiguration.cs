@@ -1,6 +1,19 @@
-﻿namespace ProjektHaushaltsbuch.Data.Configurations;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ProjektHaushaltsbuch.Models;
 
-public class BudgetConfiguration
+namespace ProjektHaushaltsbuch.Data.Configurations;
+
+public class BudgetConfiguration: IEntityTypeConfiguration<BudgetModel>
 {
-    //TODO
+    public void Configure(EntityTypeBuilder<BudgetModel> builder)
+    {
+        builder
+            .HasOne(b => b.User)
+            .WithMany(u => u.Budgets)
+            .HasForeignKey(b => b.UserId);
+        builder
+            .Property(b => b.Amount)
+            .HasPrecision(19, 4);
+    }
 }
