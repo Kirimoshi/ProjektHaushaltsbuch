@@ -1,148 +1,335 @@
-@model ProjektHaushaltsbuch.Models.ExpenseModel
+@model ProjektHaushaltsbuch.Web.ViewModels.ExpenseCreateViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Neue Ausgabe";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<h1>Neue Ausgabe erstellen</h1>
 
-<h4>ExpenseModel</h4>
-<hr />
+<p>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Zurück zur Liste
+    </a>
+</p>
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Sum" class="control-label"></label>
-                <input asp-for="Sum" class="form-control" />
-                <span asp-validation-for="Sum" class="text-danger"></span>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            
+            <!-- Grunddaten -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-coins me-2"></i>
+                        Grunddaten
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Sum" class="form-label">
+                                    <strong>Betrag</strong>
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Sum" class="form-control" step="0.01" type="number" />
+                                    <span class="input-group-text">€</span>
+                                </div>
+                                <span asp-validation-for="Sum" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Currency" class="form-label">
+                                    <strong>Währung</strong>
+                                </label>
+                                <select asp-for="Currency" class="form-select">
+                                    <option value="">Währung wählen</option>
+                                </select>
+                                <span asp-validation-for="Currency" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Date" class="form-label">
+                                    <strong>Datum</strong>
+                                </label>
+                                <input asp-for="Date" class="form-control" type="date" />
+                                <span asp-validation-for="Date" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="CategoryId" class="form-label">
+                                    <strong>Kategorie</strong>
+                                </label>
+                                <select asp-for="CategoryId" class="form-select">
+                                    <option value="">Kategorie wählen</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="form-label">
+                            <strong>Beschreibung</strong>
+                        </label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Notes" class="form-label">
+                            <strong>Notizen</strong>
+                        </label>
+                        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Currency" class="control-label"></label>
-                <select asp-for="Currency" class="form-control"></select>
-                <span asp-validation-for="Currency" class="text-danger"></span>
+
+            <!-- Zahlungsdetails -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Zahlungsdetails
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="PaymentMethod" class="form-label">
+                                    <strong>Zahlungsmethode</strong>
+                                </label>
+                                <select asp-for="PaymentMethod" class="form-select">
+                                    <option value="">Zahlungsmethode wählen</option>
+                                </select>
+                                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="PaymentAccount" class="form-label">
+                                    <strong>Zahlungskonto</strong>
+                                </label>
+                                <input asp-for="PaymentAccount" class="form-control" />
+                                <span asp-validation-for="PaymentAccount" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Subcategory" class="control-label"></label>
-                <input asp-for="Subcategory" class="form-control" />
-                <span asp-validation-for="Subcategory" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tags" class="control-label"></label>
-                <input asp-for="Tags" class="form-control" />
-                <span asp-validation-for="Tags" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentMethod" class="control-label"></label>
-                <select asp-for="PaymentMethod" class="form-control"></select>
-                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentAccount" class="control-label"></label>
-                <input asp-for="PaymentAccount" class="form-control" />
-                <span asp-validation-for="PaymentAccount" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsBusinessExpense" /> @Html.DisplayNameFor(model => model.IsBusinessExpense)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReceiptNumber" class="control-label"></label>
-                <input asp-for="ReceiptNumber" class="form-control" />
-                <span asp-validation-for="ReceiptNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Vendor" class="control-label"></label>
-                <input asp-for="Vendor" class="form-control" />
-                <span asp-validation-for="Vendor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsRecurring" /> @Html.DisplayNameFor(model => model.IsRecurring)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecurrencePattern" class="control-label"></label>
-                <input asp-for="RecurrencePattern" class="form-control" />
-                <span asp-validation-for="RecurrencePattern" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ParentRecurringExpenseId" class="control-label"></label>
-                <input asp-for="ParentRecurringExpenseId" class="form-control" />
-                <span asp-validation-for="ParentRecurringExpenseId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedAt" class="control-label"></label>
-                <input asp-for="UpdatedAt" class="form-control" />
-                <span asp-validation-for="UpdatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="AttachmentUrls" class="control-label"></label>
-                <input asp-for="AttachmentUrls" class="form-control" />
-                <span asp-validation-for="AttachmentUrls" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BudgetId" class="control-label"></label>
-                <input asp-for="BudgetId" class="form-control" />
-                <span asp-validation-for="BudgetId" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPlanned" /> @Html.DisplayNameFor(model => model.IsPlanned)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <!-- Kategorisierung -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tags me-2"></i>
+                        Kategorisierung
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Subcategory" class="form-label">
+                                    <strong>Unterkategorie</strong>
+                                </label>
+                                <input asp-for="Subcategory" class="form-control" />
+                                <span asp-validation-for="Subcategory" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Tags" class="form-label">
+                                    <strong>Tags</strong>
+                                </label>
+                                <input asp-for="Tags" class="form-control" />
+                                <span asp-validation-for="Tags" class="text-danger"></span>
+                                <small class="text-muted">Mehrere Tags mit Komma trennen</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
+
+    <!-- Sidebar -->
+    <div class="col-md-4">
+        <!-- Status -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="IsBusinessExpense" type="checkbox" />
+                    <label class="form-check-label" asp-for="IsBusinessExpense">
+                        <span class="badge bg-info">Geschäftsausgabe</span>
+                    </label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="IsRecurring" type="checkbox" />
+                    <label class="form-check-label" asp-for="IsRecurring">
+                        <span class="badge bg-secondary">Wiederkehrend</span>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="IsPlanned" type="checkbox" />
+                    <label class="form-check-label" asp-for="IsPlanned">
+                        <span class="badge bg-warning">Geplant</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geschäftsausgaben Details -->
+        <div class="card mb-4" id="businessExpenseCard" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-briefcase me-2"></i>
+                    Geschäftsausgaben
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-3">
+                    <label asp-for="ReceiptNumber" class="form-label">
+                        <strong>Belegnummer</strong>
+                    </label>
+                    <input asp-for="ReceiptNumber" class="form-control" />
+                    <span asp-validation-for="ReceiptNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Vendor" class="form-label">
+                        <strong>Anbieter</strong>
+                    </label>
+                    <input asp-for="Vendor" class="form-control" />
+                    <span asp-validation-for="Vendor" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Location" class="form-label">
+                        <strong>Standort</strong>
+                    </label>
+                    <input asp-for="Location" class="form-control" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wiederholung -->
+        <div class="card mb-4" id="recurringCard" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-sync-alt me-2"></i>
+                    Wiederholung
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-3">
+                    <label asp-for="RecurrencePattern" class="form-label">
+                        <strong>Wiederholungsmuster</strong>
+                    </label>
+                    <select asp-for="RecurrencePattern" class="form-select">
+                        <option value="">Muster wählen</option>
+                    </select>
+                    <span asp-validation-for="RecurrencePattern" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anhänge -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-paperclip me-2"></i>
+                    Anhänge
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-3">
+                    <label asp-for="AttachmentUrls" class="form-label">
+                        <strong>Belege</strong>
+                    </label>
+                    <input asp-for="AttachmentUrls" class="form-control" type="file" multiple />
+                    <span asp-validation-for="AttachmentUrls" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Budget
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-3">
+                    <label asp-for="BudgetId" class="form-label">
+                        <strong>Budget zuordnen</strong>
+                    </label>
+                    <select asp-for="BudgetId" class="form-select">
+                        <option value="">Kein Budget</option>
+                    </select>
+                    <span asp-validation-for="BudgetId" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<!-- Aktionsbuttons -->
+<div class="d-flex justify-content-between mt-4">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-times me-1"></i>
+        Abbrechen
+    </a>
+    <div>
+        <button type="submit" class="btn btn-primary me-2">
+            <i class="fas fa-save me-1"></i>
+            Speichern
+        </button>
+        <button type="submit" name="saveAndNew" value="true" class="btn btn-success">
+            <i class="fas fa-plus me-1"></i>
+            Speichern & Neue
+        </button>
+    </div>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+    // Toggle business expense fields
+    document.getElementById('IsBusinessExpense').addEventListener('change', function() {
+        const card = document.getElementById('businessExpenseCard');
+        card.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Toggle recurring fields
+    document.getElementById('IsRecurring').addEventListener('change', function() {
+        const card = document.getElementById('recurringCard');
+        card.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Initialize display state
+    document.addEventListener('DOMContentLoaded', function() {
+        const businessExpense = document.getElementById('IsBusinessExpense');
+        const recurring = document.getElementById('IsRecurring');
+        
+        document.getElementById('businessExpenseCard').style.display = 
+            businessExpense.checked ? 'block' : 'none';
+        document.getElementById('recurringCard').style.display = 
+            recurring.checked ? 'block' : 'none';
+    });
+</script>
