@@ -60,17 +60,18 @@ namespace ProjektHaushaltsbuch.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Sum,Currency,Date,Description,Notes,UserId,CategoryId,Subcategory,Tags,PaymentMethod,PaymentAccount,IsBusinessExpense,ReceiptNumber,Vendor,Location,IsRecurring,RecurrencePattern,ParentRecurringExpenseId,CreatedAt,UpdatedAt,IsDeleted,AttachmentUrls,BudgetId,IsPlanned")] ExpenseModel expenseModel)
+        public async Task<IActionResult> Create([Bind("Id,Sum,Currency,Date,Description,Notes,UserId,CategoryId,Subcategory,Tags,PaymentMethod,PaymentAccount,IsBusinessExpense,ReceiptNumber,Vendor,Location,IsRecurring,RecurrencePattern,ParentRecurringExpenseId,CreatedAt,UpdatedAt,IsDeleted,AttachmentUrls,BudgetId,IsPlanned")] ExpenseCreateViewModel viewModel, Guid userId)
         {
+            var expense = mapper.Map<ExpenseModel>(viewModel);
             if (ModelState.IsValid)
             {
-                expenseModel.Id = Guid.NewGuid();
-                context.Add(expenseModel);
+                expense.UpdatedAt = DateTime.UtcNow;
+                context.Add(expense);
                 await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(context.Set<CategoryModel>(), "Id", "Id", expenseModel.CategoryId);
-            return View(expenseModel);
+            ViewData["CategoryId"] = new SelectList(context.Set<CategoryModel>(), "Id", "Id", expense.CategoryId);
+            return View(viewModel);
         }
 
         // GET: Expense/Edit/5

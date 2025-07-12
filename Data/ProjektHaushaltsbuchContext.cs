@@ -22,6 +22,7 @@ namespace ProjektHaushaltsbuch.Data
             
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjektHaushaltsbuchContext).Assembly);
         }
-        public DbSet<ProjektHaushaltsbuch.Web.ViewModels.ExpenseDisplayViewModel> ExpenseDisplayViewModel { get; set; } = default!;
+        public DbSet<ExpenseDisplayViewModel> ExpenseDisplayViewModel { get; set; } = default!;
+        public DbSet<ProjektHaushaltsbuch.Web.ViewModels.ExpenseCreateViewModel> ExpenseCreateViewModel { get; set; } = default!;
     }
 }

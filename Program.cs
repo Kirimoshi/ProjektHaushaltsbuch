@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Threading.RateLimiting;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
@@ -31,8 +32,8 @@ builder.Services
     .AddEntityFrameworkStores<ApplicationIdentityContext>();
 
 builder.Services.AddSerilog();
-builder.Services.AddAutoMapper(typeof(UserProfile));
-builder.Services.AddAutoMapper(typeof(ExpenseDisplayProfile));
+// builder.Services.AddAutoMapper(typeof(UserProfile), typeof(ExpenseDisplayProfile));
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -25,7 +25,40 @@ public class ExpenseConfiguration: IEntityTypeConfiguration<ExpenseModel>
             .HasDefaultValueSql("GETUTCDATE()");
         builder
             .Property(e => e.Sum)
-            .HasPrecision(19, 4);
+            .HasPrecision(19, 4)
+            .IsRequired();
+        builder
+            .Property(e => e.Description)
+            .HasMaxLength(200)
+            .IsRequired();
+            
+        builder
+            .Property(e => e.Notes)
+            .HasMaxLength(500);
+            
+        builder
+            .Property(e => e.Subcategory)
+            .HasMaxLength(100);
+            
+        builder
+            .Property(e => e.PaymentAccount)
+            .HasMaxLength(100);
+            
+        builder
+            .Property(e => e.ReceiptNumber)
+            .HasMaxLength(50);
+            
+        builder
+            .Property(e => e.Vendor)
+            .HasMaxLength(100);
+            
+        builder
+            .Property(e => e.Location)
+            .HasMaxLength(100);
+            
+        // Datenbankconstraints für Geschäftsregeln
+        builder
+            .HasCheckConstraint("CK_ExpenseModel_Sum_Positive", "[Sum] > 0");
         // Indexes for performance
         builder
             .HasIndex(e => e.CategoryId);
