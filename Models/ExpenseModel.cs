@@ -21,7 +21,6 @@ public class ExpenseModel
     // Erweiterte Kategorisierung
     // Foreign Key
     public Guid CategoryId { get; set; }
-    public List<CategoryModel> AvailableCategories { get; set; }
     public string? Subcategory { get; set; }
     public List<string>? Tags { get; set; }
     

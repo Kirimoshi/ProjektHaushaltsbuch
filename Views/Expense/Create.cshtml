@@ -31,10 +31,11 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="Sum" class="form-label">
-                                    <strong>Betrag</strong>
+                                    <strong>Betrag *</strong>
                                 </label>
                                 <div class="input-group">
-                                    <input asp-for="Sum" class="form-control" step="0.01" type="number" />
+                                    <input asp-for="Sum" class="form-control" min="0.01" step="0.01" type="number"
+                                           placeholder="0,01"/>
                                     <span class="input-group-text">€</span>
                                 </div>
                                 <span asp-validation-for="Sum" class="text-danger"></span>
@@ -43,10 +44,12 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="Currency" class="form-label">
-                                    <strong>Währung</strong>
+                                    <strong>Währung *</strong>
                                 </label>
                                 <select asp-for="Currency" class="form-select">
-                                    <option value="">Währung wählen</option>
+                                    <option default value="EUR">Euro</option>
+                                    <option value="USD">Dollar</option>
+                                    <option value="UAH">Hryvnia</option>
                                 </select>
                                 <span asp-validation-for="Currency" class="text-danger"></span>
                             </div>
@@ -59,16 +62,20 @@
                                 <label asp-for="Date" class="form-label">
                                     <strong>Datum</strong>
                                 </label>
-                                <input asp-for="Date" class="form-control" type="date" />
+                                <input asp-for="Date"
+                                       asp-format="{0:yyyy-MM-dd}" 
+                                       class="form-control" 
+                                       type="date"
+                                       value="@DateTime.Today.ToString("yyyy-MM-dd")" />
                                 <span asp-validation-for="Date" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="CategoryId" class="form-label">
-                                    <strong>Kategorie</strong>
+                                    <strong>Kategorie *</strong>
                                 </label>
-                                <select asp-for="CategoryId" class="form-select">
+                                <select asp-for="CategoryId" asp-items="Model.CategorySelectList" class="form-select">
                                     <option value="">Kategorie wählen</option>
                                 </select>
                                 <span asp-validation-for="CategoryId" class="text-danger"></span>
@@ -78,9 +85,10 @@
 
                     <div class="form-group mb-3">
                         <label asp-for="Description" class="form-label">
-                            <strong>Beschreibung</strong>
+                            <strong>Beschreibung *</strong>
                         </label>
-                        <input asp-for="Description" class="form-control" />
+                        <input asp-for="Description" class="form-control"
+                               placeholder="z.B. Einkauf bei Rewe" />
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
@@ -88,7 +96,8 @@
                         <label asp-for="Notes" class="form-label">
                             <strong>Notizen</strong>
                         </label>
-                        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        <textarea asp-for="Notes" class="form-control" rows="3"
+                            placeholder="Zusätzliche Informationen (optional)"></textarea>
                         <span asp-validation-for="Notes" class="text-danger"></span>
                     </div>
                 </div>
@@ -205,24 +214,31 @@
             </div>
             <div class="card-body">
                 <div class="form-group mb-3">
+                    <label asp-for="AttachmentUrls" class="form-label">
+                        <strong>Belege</strong>
+                    </label>
+                    <input asp-for="AttachmentUrls" class="form-control" type="file" multiple />
+                    <span asp-validation-for="AttachmentUrls" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
                     <label asp-for="ReceiptNumber" class="form-label">
                         <strong>Belegnummer</strong>
                     </label>
-                    <input asp-for="ReceiptNumber" class="form-control" />
+                    <input asp-for="ReceiptNumber" class="form-control"/>
                     <span asp-validation-for="ReceiptNumber" class="text-danger"></span>
                 </div>
                 <div class="form-group mb-3">
                     <label asp-for="Vendor" class="form-label">
                         <strong>Anbieter</strong>
                     </label>
-                    <input asp-for="Vendor" class="form-control" />
+                    <input asp-for="Vendor" class="form-control"/>
                     <span asp-validation-for="Vendor" class="text-danger"></span>
                 </div>
                 <div class="form-group mb-3">
                     <label asp-for="Location" class="form-label">
                         <strong>Standort</strong>
                     </label>
-                    <input asp-for="Location" class="form-control" />
+                    <input asp-for="Location" class="form-control"/>
                     <span asp-validation-for="Location" class="text-danger"></span>
                 </div>
             </div>
@@ -250,26 +266,17 @@
         </div>
 
         <!-- Anhänge -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-paperclip me-2"></i>
-                    Anhänge
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="form-group mb-3">
-                    <label asp-for="AttachmentUrls" class="form-label">
-                        <strong>Belege</strong>
-                    </label>
-                    <input asp-for="AttachmentUrls" class="form-control" type="file" multiple />
-                    <span asp-validation-for="AttachmentUrls" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
+        @* <div class="card mb-4"> *@
+        @*     <div class="card-header"> *@
+        @*         <h5 class="mb-0"> *@
+        @*             <i class="fas fa-paperclip me-2"></i> *@
+        @*             Anhänge *@
+        @*         </h5> *@
+        @*     </div> *@
+        @* </div> *@
 
         <!-- Budget -->
-        <div class="card mb-4">
+        <div class="card mb-4" id="budgetCard" style="display: none;">
             <div class="card-header">
                 <h5 class="mb-0">
                     <i class="fas fa-chart-pie me-2"></i>
@@ -321,15 +328,24 @@
         const card = document.getElementById('recurringCard');
         card.style.display = this.checked ? 'block' : 'none';
     });
+    
+    // Toggle planned fields
+    document.getElementById('IsPlanned').addEventListener('change', function() {
+        const card = document.getElementById("budgetCard");
+        card.style.display = this.checked ? 'block' : 'none';
+    })
 
     // Initialize display state
     document.addEventListener('DOMContentLoaded', function() {
         const businessExpense = document.getElementById('IsBusinessExpense');
         const recurring = document.getElementById('IsRecurring');
+        const isPlanned = document.getElementById('IsPlanned');
         
         document.getElementById('businessExpenseCard').style.display = 
             businessExpense.checked ? 'block' : 'none';
         document.getElementById('recurringCard').style.display = 
             recurring.checked ? 'block' : 'none';
+        document.getElementById("budgetCard").style.display =
+            isPlanned.checked ? 'block' : 'none';
     });
 </script>
