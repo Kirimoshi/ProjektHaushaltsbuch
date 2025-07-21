@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjektHaushaltsbuch.Enums;
+using ProjektHaushaltsbuch.Models;
 
 namespace ProjektHaushaltsbuch.Web.ViewModels;
 
@@ -10,9 +12,9 @@ public class ExpenseCreateViewModel
     [Required]
     [Range(0.01, double.MaxValue, ErrorMessage = "Sum must be greater than 0.01")]
     public decimal Sum { get; set; }
+    [Required(ErrorMessage = "Please choose a currency")]
     public CurrencyType Currency { get; set; } = CurrencyType.EUR;
-    [Required]
-    public DateTime Date { get; set; } = DateTime.Now;
+    public DateTime Date { get; set; } = DateTime.Today;
     
     // Basis-Erweiterungen
     [Required]
@@ -24,6 +26,13 @@ public class ExpenseCreateViewModel
     // Erweiterte Kategorisierung
     [Required]
     public Guid CategoryId { get; set; }
+    public List<CategoryModel> AvailableCategories { get; set; } = CategoryDefaults.GetDefaultCategories();
+    public List<SelectListItem> CategorySelectList => AvailableCategories.Select(c => new SelectListItem
+    {
+        Value = c.Id.ToString(),
+        Text = $"{c.Icon} {c.Name}",
+        Selected = c.Id == CategoryId
+    }).ToList();
     [MaxLength(100, ErrorMessage = "Subcategory cannot exceed 100 characters")]
     public string? Subcategory { get; set; }
     public List<string>? Tags { get; set; }
